@@ -1,0 +1,166 @@
+<!DOCTYPE=html>
+<html>
+    <head>
+        <title>Jive</title>
+        <link rel="stylesheet" type="text/css" href="../styles.css">
+        <link rel="stylesheet" type="text/css" href="./calendarstyles.css">
+        <link rel="stylesheet" type="text/css" href="./signinstyles.css">
+    </head>
+	<body>
+        <header>
+            <h1>Jive</h1>
+            <nav class="navbar">
+                <ul>
+                    <li>Profile</li>
+                    <li>About Us</li>
+                    <li>Settings</li>
+                    <li id="signout">Sign Out</li>
+                </ul>
+            </nav>
+        </header>
+        <div>
+            <ol class="week-list" id="weeklist">
+                <!-- Will be populated with week dates dynamically-->
+            </ol>
+        </div>
+        <div id="calendar">
+            <table width="3" height="2" cellpadding="10px">
+                <tr class="week-day">
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                </tr>
+                <tr>
+                    <td id="monday">
+                        <div class="day-container">
+                            <ul class="day-tasks" id="mon-tasks"></ul>
+                        </div>
+
+                        <div id="deletecontainermon" class="deletecontainer">
+                            <!--
+                            <img id="deletemark" src="images/deletemark.svg">
+                            -->
+                        </div>
+
+                        <img src="images/plus.png" id="monplus" class="plus">
+                    </td>
+                    <td id="tuesday">
+                        <div class="day-container">
+                            <ul class="day-tasks" id="tue-tasks">
+                            </ul>
+                        </div>
+
+                        <div id="deletecontainertue" class="deletecontainer">
+                            
+                        </div>
+
+                        <img src="images/plus.png" id="tueplus" class="plus">
+                    </td>
+                    <td id="wednesday">
+                        <div class="day-container">
+                            <ul class="day-tasks" id="wed-tasks">
+                            </ul>
+                        </div>
+
+                        <div id="deletecontainerwed" class="deletecontainer">
+    
+                        </div>
+                        
+                        <img src="images/plus.png" id="wedplus" class="plus">
+                    </td>
+                </tr>
+                <tr class="week-day">
+                    <th>Thursday</th>
+                    <th>Friday</th>
+                </tr>
+                <tr>
+                    <td id="thursday">
+                        <div class="day-container">
+                            <ul class="day-tasks" id="thu-tasks">
+                            </ul>
+                        </div>
+
+                        <div id="deletecontainerthu" class="deletecontainer">
+                            
+                        </div>
+
+                        <img src="images/plus.png" id="thuplus" class="plus">
+                    </td>
+                    <td id="friday">
+                        <div class="day-container">
+                            <ul class="day-tasks" id="fri-tasks">
+                            </ul>
+                        </div>
+
+                        <!-- elements will be added dynamically to deletecontainer-->
+                        <div id="deletecontainerfri" class="deletecontainer">
+
+                        </div>
+
+                        <img src="images/plus.png" id="friplus" class="plus">
+                    </td>
+                </tr>
+            </table>
+            <h3 id="today-date">7/14/2020</h3>
+            <img src="./images/gear.png" height="30" alt="gear">
+        </div>
+
+        <button type="button" id="saveButton">Save</button>
+        
+        <!-- Sign in section - is removed upon sign in -->
+        <div id="overlay">
+            <div id="signinbox">
+                <h2>Sign in</h2>
+                <form>
+                    <div id="signin-col1">
+                        <label for="username" id="username">Email: </label>
+                        <label for="password" id="password">Password:</label>
+                    </div>
+                    <div id="signin-col2">
+                        <input type="text" name="username"
+                            id="usernameinput">
+                        <input type="password" name="password" id="passwordinput">
+                    </div>
+                    <hr class="clear-break">
+                    <button type="button" class="popup" id="cancel-button">Cancel</button>
+                    <button type="button" class="popup" id="signin-button" >Sign In</button>
+                    <h4 id="error-message">error signing in</h4>
+                </form>
+            </div>
+        </div>
+        <!-- end sign in section -->
+
+        <footer class="navbar">
+            <ul>
+                <li>Contact</li>
+                <li>About Us</li>
+                <li>Legal</li>
+                <li>Settings</li>
+            </ul>
+            <span id="copyright">Copyright &copy 2020</span>
+        </footer>
+        
+        <!-- Firebase code -->
+        <!-- The core Firebase JS SDK is always required and must be listed first -->
+        <script src="https://www.gstatic.com/firebasejs/7.15.4/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-firestore.js"></script>
+
+        <script src="https://www.gstatic.com/firebasejs/7.15.4/firebase-analytics.js"></script>
+        <script src="/__/firebase/7.15.4/firebase-auth.js"></script>
+        <script src="/__/firebase/7.15.4/firebase-firestore.js"></script>
+
+        <script>
+          // Your web app's Firebase configuration
+          import {firebaseConfig} from './firebase-config.js';
+          // Initialize Firebase
+          firebase.initializeApp(firebaseConfig);
+          firebase.analytics();
+        </script>
+        
+        <!-- end of firebase code -->
+        
+        <!-- scripts that use firebase services -->
+        <script  src="./input.js"></script>
+
+	</body>
+</html>

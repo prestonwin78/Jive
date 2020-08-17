@@ -1,0 +1,161 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+/* make cursor into a hand to symbolize link when
+    user hovers over signout button */
+#signout{
+    cursor: pointer;
+}
+
+.week-day {
+    color: ghostwhite;
+    font-family: Arial;
+    text-align: left;
+    height: 25px;
+}
+
+body {
+    background-color: #FAF9F4;
+}
+
+table {
+    margin-right: auto;
+    margin-left: auto;
+    padding: 0px 20px 10px 20px;
+    border: 1px solid rgb(133, 133, 133);
+    border-radius: 10px;
+    width: 750px;
+    height: 400px;
+    background: rgb(55, 117, 127);
+    border-spacing: 20px 0px;
+}
+
+/* Cells for tasks of the day */
+tr td{
+    border: 1px solid gray;
+    border-radius: 10px;
+    background-color: hsl(199, 75%, 95%);
+    margin: 0px 10px 0px 10px;
+    height: 40%;
+    min-height: 50%;
+    max-height: 50%;
+    font-family: Arial;
+    font-size: 14;
+    color: darkslategray;
+    padding: 10px;
+}
+
+#today-date {
+    text-align: right;
+    padding-right: 0;
+    float: right;
+}
+
+.week-list {
+    list-style: none;
+    font-size: .9em;
+    color: lightslategray;
+    display: inline block;
+    float: left;
+    width: auto;
+    margin-right: 10%;
+    margin-left: 5%;
+    margin-top: 40px;
+}
+
+/* List of weeks indicated by starting date */
+.week-list li {
+    padding: 10px;
+}
+
+.week-list li:hover{
+    color: darkslategray;
+    background: white;
+    border-radius: 15px;
+}
+
+/* List of tasks within a day */
+/* not working */
+
+.day-tasks{
+    list-style-type: none;
+    width: 100px; 
+}
+    
+input[type=text] {
+    border: none;
+    background-color: white;
+    margin: 2px 0px;
+    padding: 2px 5px;
+    width: 150px;
+    height: 25px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.deletemark {
+    display: block;
+    width: 12px;
+    opacity: 0;
+    margin: 2px 0px;
+    padding: 2px 5px;
+    height: 24px;   
+}
+
+.deletemark:hover {
+    opacity: 1;
+}
+
+
+#calendar{
+    display: inline-block;
+    position: relative;
+    align-content: left;
+    float: none;
+    width: 50%;
+    margin: 30px;
+}
+
+.day-container {
+    margin: 0;
+    padding: 0;
+    align-content: left;
+    float: left;        
+    width: 80%;        
+}
+
+.plus {
+    width: 17px;
+    float: right;
+    display: inline-block;
+    position: relative;
+    bottom: 0;
+    right: 0;
+}
+
+#saveButton {
+    background-color: #4CAF50; 
+    border: none;
+    color: white;
+    padding: 5px 20px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    border: 1px solid rgb(133, 133, 133); 
+    box-shadow: turquoise;
+    border-radius: 4px;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    border: none;
+}

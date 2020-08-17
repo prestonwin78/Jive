@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Jive</title>
+        <link rel="stylesheet" type="text/css" href="styles.css">
+    </head>
+    
+    <body>
+        <header>
+            <h1>Jive</h1>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="signup.html">Sign Up</li>
+                    <li><a href="./Calendar/calendar.html">Login</a></li>
+                    <li>About Us</li>
+                    <li>Settings</li>
+                </ul>
+            </nav>
+        </header>
+
+        <div id="clr"></div>
+        
+        <section id="image-sec">
+            <h2 id="image-overlay-font">Simple, Lightweight, Free</h2>
+            <p class="paragraph"> Jive is a simple and easy to use task manager which
+                allows users to easily add items to their to-do list, change the completion status of items, and customize the look of the application all within the website.
+            </p>
+        </section>
+        
+        <section id="info-sec" class="container">
+            <div class="grid-item">
+                <h3>How It Works</h3>
+                <p> Jive is a personal daily planner website in which users can set daily tasks and see task completion on a daily basis. The user can see what tasks have been accomplished, what has been postponed, and what was cancelled. The website shows each task for the week organized by day.</p>
+            </div>
+            <div class="grid-item">
+                <h3>Simple Design</h3>
+                <p>Tabs for all of the days of the week to the user and provide easy access to different weeks. </p>
+            </div>
+            <div class="grid-item">
+                <h3>Easy Access</h3>
+                <p>In this page, the current day of the week tab is expanded to fill the page. Here, daily task information is given in greater detail</p>
+            </div>
+        </section>
+        
+        <div id="sign-up">
+            <a class="big-button" id="signup-button" href="./signup.html">Sign Up</a>
+            <h4 class="small-button">Learn More</h4>
+        </div>
+        
+        
+        <footer class="navbar">
+            <ul>
+                <li>Contact</li>
+                <li>About Us</li>
+                <li>Legal</li>
+                <li>Settings</li>
+            </ul>
+            <span id="copyright">Copyright &copy 2020</span>
+        </footer>
+        
+        
+        <!-- Firebase code -->
+        <!-- The core Firebase JS SDK is always required and must be listed first -->
+        <script src="https://www.gstatic.com/firebasejs/7.15.4/firebase-app.js"></script>
+
+        <!-- TODO: Add SDKs for Firebase products that you want to use
+             https://firebase.google.com/docs/web/setup#available-libraries -->
+        <script src="https://www.gstatic.com/firebasejs/7.15.4/firebase-analytics.js"></script>
+        <script src="/__/firebase/7.15.4/firebase-auth.js"></script>
+        <script src="/__/firebase/7.15.4/firebase-firestore.js"></script>
+
+        <script>
+          // Your web app's Firebase configuration
+          import {firebaseConfig} from './firebase-config.js';
+          // Initialize Firebase
+          firebase.initializeApp(firebaseConfig);
+          firebase.analytics();
+        </script>
+        
+        <!-- end of firebase code -->
+        
+        <!-- firebase services -->
+        <script>
+            firebase.auth().signOut();
+            localStorage.removeItem("userData");
+        </script>   <!-- TODO: delete-->
+        
+    </body>
+</html>
