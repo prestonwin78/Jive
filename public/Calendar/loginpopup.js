@@ -30,9 +30,8 @@
                 let overlay = document.getElementById("overlay");
                 overlay.style.display = "none";
                 afterInit();  //main logic
-                } 
-            }
-        ).catch(function(e){
+            } 
+        }).catch(function(e){
             //display error message
             document.getElementById("error-message").style.display = "inline-block";
         });

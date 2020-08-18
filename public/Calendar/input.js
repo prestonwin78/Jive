@@ -1,5 +1,5 @@
-
 import {displayLoginPopup} from './loginpopup.js';
+import Task from './Task.js';
 
 let userId = "";
 let signOutPressed = false;
@@ -7,7 +7,7 @@ let signOutPressed = false;
 //Add state listener to listen for user signin/signout  
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
-    console.log("user is signed in");
+    //user is signed in
     userId = firebase.auth().currentUser.uid;
     console.log("Userid: " + userId);
     //remove overlay
@@ -16,10 +16,10 @@ firebase.auth().onAuthStateChanged(function(user) {
     //proceed to main logic
     afterInit();
   } else {
+    //user is signed out
+
     //If the signout button was not pressed, 
     //display the sign-in overlay
-    console.log("user is signed out");
-    
     if(!signOutPressed){
       displayLoginPopup();
     }
@@ -30,7 +30,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 //after the user successfully signs in
 function afterInit(){
 
-// Add signout functionality Sign out
+// Add signout functionality
 let signout = document.getElementById("signout");
 signout.addEventListener("click", (e) => {
   e.preventDefault();
@@ -42,19 +42,19 @@ signout.addEventListener("click", (e) => {
   });
 });
 
+//get database instance
 let db = firebase.firestore();
 
-let monTaskDocs = [];
-let tueTaskDocs = [];
-let wedTaskDocs = [];
-let thuTaskDocs = [];
-let friTaskDocs = [];
-let monTaskListItems = [];
-let tueTaskListItems = [];
-let wedTaskListItems = [];
-let thuTaskListItems = [];
-let friTaskListItems = [];
+/*  let monTaskDocs = [];
+    let friTaskListItems = [];  */
+
 let numTasks = [0, 0, 0, 0, 0]; //number of monday tasks held in [0]
+
+let monTasks = [];
+let tueTasks = [];
+let wedTasks = [];
+let thuTasks = [];
+let friTasks = [];
 
 // Initialize the calendar+populate with the week's tasks
 
@@ -86,11 +86,6 @@ console.log("date: " + date);
 console.log("modified: " + date.getDate());
 var dayOfWeek = date.getDay();
 //calculate what days are mon, tues, wed, thur, fri
-var monTasks = null;
-var tueTasks = null;
-var wedTasks = null;
-var thuTasks = null;
-var friTasks = null;
 var mondayDate = new Date();
 var tuesdayDate = new Date();
 var wednesdayDate = new Date();
@@ -242,61 +237,56 @@ var wedQuery = tasksRef.where("dateOfTask", "==", wednesdayDate);
 var thuQuery = tasksRef.where("dateOfTask", "==", thursdayDate);
 var friQuery = tasksRef.where("dateOfTask", "==", fridayDate);
 
-/*  outputTasks(outputDoc, dayOfWeek) : takes in a task document and 
+
+ outputDates();
+
+
+ /*  outputTasks(outputDoc, dayOfWeek) : takes in a task document and 
     outputs the document in a list item on the correct day of the week
     on the web page
 */
- outputDates();
-
 function outputTasks(outputDoc, dayOfWeek){
-  //console.log("in output tasks");
-  //console.log("passed in: " + dayOfWeek);
+  let newTask = new Task();
+  newTask.dayOfWeek = dayOfWeek;
+  newTask.document = outputDoc;
 
-  //add task already created to array  
+  let listToUpdate = null;
+  let currentDay = "";
+  let deleteContainer = "";
 
-let listToUpdate = null;
-let taskListItemsRef = null;
-let currentDay = "";
-let deleteContainer = "";
-
-switch(dayOfWeek){
-  case 1:
-    listToUpdate = document.getElementById("mon-tasks");
-    monTaskDocs.push(outputDoc);
-    taskListItemsRef = monTaskListItems;
-    currentDay = "mon";
-    deleteContainer = document.getElementById("deletecontainermon");
-    break;
-  case 2:
-    listToUpdate = document.getElementById("tue-tasks");
-    tueTaskDocs.push(outputDoc);
-    taskListItemsRef = tueTaskListItems;
-    currentDay = "tue";
-    deleteContainer = document.getElementById("deletecontainertue");
-    break;
-  case 3:
-    listToUpdate = document.getElementById("wed-tasks");
-    wedTaskDocs.push(outputDoc);
-    taskListItemsRef = wedTaskListItems;
-    currentDay = "wed";
-    deleteContainer = document.getElementById("deletecontainerwed");
-    break;
-  case 4:
-    listToUpdate = document.getElementById("thu-tasks");
-    thuTaskDocs.push(outputDoc);
-    taskListItemsRef = thuTaskListItems;
-    currentDay = "thu";
-    deleteContainer = document.getElementById("deletecontainerthu");
-    break;
-  case 5:
-    listToUpdate = document.getElementById("fri-tasks");
-    friTaskDocs.push(outputDoc);
-    taskListItemsRef = friTaskListItems;
-    currentDay = "fri";
-    deleteContainer = document.getElementById("deletecontainerfri");
-    break;
-  default:
-    console.log("ERROR: NO LIST TO UPDATE");
+  switch(dayOfWeek){
+    case 1:
+      listToUpdate = document.getElementById("mon-tasks");
+      monTasks.push(newTask);
+      currentDay = "mon";
+      deleteContainer = document.getElementById("deletecontainermon");
+      break;
+    case 2:
+      listToUpdate = document.getElementById("tue-tasks");
+      tueTasks.push(newTask);
+      currentDay = "tue";
+      deleteContainer = document.getElementById("deletecontainertue");
+      break;
+    case 3:
+      listToUpdate = document.getElementById("wed-tasks");
+      wedTasks.push(newTask);
+      currentDay = "wed";
+      deleteContainer = document.getElementById("deletecontainerwed");
+      break;
+    case 4:
+      listToUpdate = document.getElementById("thu-tasks");
+      thuTasks.push(newTask);
+      currentDay = "thu";
+      deleteContainer = document.getElementById("deletecontainerthu");
+      break;
+    case 5:
+      listToUpdate = document.getElementById("fri-tasks");
+      friTasks.push(newTask);
+      currentDay = "fri";
+      deleteContainer = document.getElementById("deletecontainerfri");
+      break;
+    default:
+      console.log("ERROR: NO LIST TO UPDATE");
   }
 
   //Create new element to hold document description
@@ -310,8 +300,8 @@ switch(dayOfWeek){
   newListItem.appendChild(newElem);
 
   listToUpdate.appendChild(newListItem); 
-  //taskListItemsRef.push(newListItem); //so it can be updated later
-  taskListItemsRef.push(newElem); //changed
+  newTask.listElement = newElem; //give Task object the element
+                                 // holding user input field
 
   //Create new element to hold delete button
   let newDeleteElem = document.createElement("img");
@@ -324,7 +314,7 @@ switch(dayOfWeek){
   console.log(numTasks.toString());
   newDeleteElem.addEventListener("click", deleteTask);
   deleteContainer.appendChild(newDeleteElem);
-
+  newTask.deleteButton = newDeleteElem;
   // <img id="deletemark" src="images/deletemark.svg">
 }
 
@@ -333,15 +323,14 @@ switch(dayOfWeek){
 
 monQuery.get()
 .then( function(querySnapshot) {
-  //querySnapshot.forEach(outputTasks, 1); 
-  querySnapshot.forEach( function (tasks) {
+  querySnapshot.forEach( 
+    function (tasks) {
       outputTasks(tasks, 1);
     }
   );
 });
 tueQuery.get()
 .then( function(querySnapshot) {
-  //querySnapshot.forEach(outputTasks, 2); 
   querySnapshot.forEach( function (tasks) {
     outputTasks(tasks, 2);
   }
@@ -349,34 +338,22 @@ tueQuery.get()
 });
 wedQuery.get()
 .then( function(querySnapshot) {
-  //querySnapshot.forEach(outputTasks, 3); 
   querySnapshot.forEach( function (tasks) {
     outputTasks(tasks, 3);
-  }
-  );
+  });
 });
 thuQuery.get()
 .then( function(querySnapshot) {
-  //querySnapshot.forEach(outputTasks, 4); 
   querySnapshot.forEach( function (tasks) {
     outputTasks(tasks, 4);
-  }
-  );
+  });
 });
 friQuery.get()
 .then( function(querySnapshot) {
-  //querySnapshot.forEach(outputTasks, 5); 
   querySnapshot.forEach( function (tasks) {
     outputTasks(tasks, 5);
-  }
-  );
+  });
 });
-
-// ********************************************** 
-// After initial web page setup
-// **********************************************
-
-/* User input */
 
 let mon = document.getElementById("monday");
 let tue = document.getElementById("tuesday");
@@ -384,16 +361,14 @@ let wed = document.getElementById("wednesday");
 let thu = document.getElementById("thursday");
 let fri = document.getElementById("friday");
 
-/* 
-*/
+
 function addTask(event) {
     event.preventDefault();
 
-    let tasklist = null;
-    var taskDate = null;
+    let newTask = new Task();
 
-    let taskDocsRef = null;
-    let listItemsRef = null;
+    let tasklist = null; 
+    var taskDate = null;
 
     let currentDay = "";  //holds "mon", "tues", etc
     let dayOfWeekIndex = -1;  //holds 0, 1, ... 4 based on day of week
@@ -403,40 +378,35 @@ function addTask(event) {
     if(event.target.id == "monplus"){
         tasklist = document.getElementById("mon-tasks");
         taskDate = mondayDate;
-        taskDocsRef = monTaskDocs;
-        listItemsRef = monTaskListItems;
+        monTasks.push(newTask);
         currentDay = "mon";
         dayOfWeekIndex = 0;
         deleteContainer = document.getElementById("deletecontainermon");
     } else if (event.target.id == "tueplus"){
         tasklist = document.getElementById("tue-tasks");
         taskDate = tuesdayDate;
-        taskDocsRef = tueTaskDocs;
-        listItemsRef = tueTaskListItems;
+        tueTasks.push(newTask);
         currentDay = "tue";
         dayOfWeekIndex = 1;
         deleteContainer = document.getElementById("deletecontainertue");
     } else if (event.target.id == "wedplus"){
         tasklist = document.getElementById("wed-tasks");
         taskDate = wednesdayDate;
-        taskDocsRef = wedTaskDocs;
-        listItemsRef = wedTaskListItems;
+        wedTasks.push(newTask);
         currentDay = "wed";
         dayOfWeekIndex = 2;
         deleteContainer = document.getElementById("deletecontainerwed");
     } else if (event.target.id == "thuplus"){
         tasklist = document.getElementById("thu-tasks");
         taskDate = thursdayDate;
-        taskDocsRef = thuTaskDocs;
-        listItemsRef = thuTaskListItems;
+        thuTasks.push(newTask);
         currentDay = "thu";
         dayOfWeekIndex = 3;
         deleteContainer = document.getElementById("deletecontainerthu");
     } else if (event.target.id == "friplus"){
         tasklist = document.getElementById("fri-tasks");
         taskDate = fridayDate;
-        taskDocsRef = friTaskDocs;
-        listItemsRef = friTaskListItems;
+        friTasks.push(newTask);
         currentDay = "fri";
         dayOfWeekIndex = 4;
         deleteContainer = document.getElementById("deletecontainerfri");
@@ -448,11 +418,11 @@ function addTask(event) {
       description: "",
       status: ""
     }).then( function(docRef){
-      console.log("description: " + docRef.id);
       let docSnap = db.collection("users").doc(userId)
       .collection("tasks").doc(docRef.id).get()
       .then(function(snap){
-        taskDocsRef.push(snap);
+        //taskDocsRef.push(snap); changed
+        newTask.document = snap;
       });
     });
     
@@ -465,7 +435,8 @@ function addTask(event) {
 
     tasklist.appendChild(newListItem);
 
-    listItemsRef.push(newElem);
+    newTask.listElement = newElem;
+    newTask.dayOfWeek = dayOfWeekIndex;
 
     //Create new element to hold delete button
     let newDeleteElem = document.createElement("img");
@@ -475,83 +446,54 @@ function addTask(event) {
     newDeleteElem.id = "delete" + currentDay + numTasks[dayOfWeekIndex]++;
     newDeleteElem.className = "deletemark";
     newDeleteElem.src="images/deletemark.svg";
-    console.log(numTasks.toString());
     newDeleteElem.addEventListener("click", deleteTask);
     deleteContainer.appendChild(newDeleteElem);
+    newTask.deleteButton = newDeleteElem;
     return;
 }
 
 // updateTasks() - updates the firestore database
 // to hold the current information for each task
 function updateTasks(){
-  let i1 = 0, i2 = 0, i3 = 0, i4 = 0, i5 = 0;
-  
-  monTaskListItems.forEach(
-    function(item){
-      //update value in corresponding doc element
-      console.log("i1 " + i1);
-      console.log("monTaskDocs[i1]: " + monTaskDocs[i1]);
-      console.log("montaskdocs[i1]: " + monTaskDocs[i1].id);
-      console.log("item.value" + item.value);
-
-      monTaskDocs[i1].ref.update({
-        description: item.value
-      })
-      .then(function(){console.log("doc written");})
-      .catch(function(){console.log("error writing");});
-      i1++;
+  monTasks.forEach(
+    function(task){
+      console.log("Task: ");
+      console.log("document: " + task.document.id);
+      console.log("deleteButton: " + task.deleteButton.id);
+      console.log("dayOfWeek: " + task.dayOfWeek);
+      console.log("listElement: " + task.listElement.value);
+      updateTask(task);
     }
-  ); //this block repeated for each day
-  
-   tueTaskListItems.forEach(
-     function(item){
-        //update value in corresponding doc element
-        tueTaskDocs[i2].ref.update({
-          description: item.value
-        })
-        .then(function(){console.log("doc written");})
-        .catch(function(){console.log("error writing");});
-        i2++;
-     }
-   );
-
-   wedTaskListItems.forEach(
-     function(item){
-        //update value in corresponding doc element
-        //console.log(wedTaskDocs[i3].description.dateOfTask);
-        wedTaskDocs[i3].ref.update({
-          description: item.value
-        })
-        .then(function(){console.log("doc written");})
-        .catch(function(){console.log("error writing");});
-        i3++;
-     }
-   );
-
-   thuTaskListItems.forEach(
-     function(item){
-        //update value in corresponding doc element
-        thuTaskDocs[i4].ref.update({
-          description: item.value
-        })
-        .then(function(){console.log("doc written");})
-        .catch(function(){console.log("error writing");});
-        i4++;
-     }
-   );
-
-   friTaskListItems.forEach(
-     function(item){
-        //update value in corresponding doc element
-        friTaskDocs[i5].ref.update({
-          description: item.value
-        })
-        .then(function(){console.log("doc written");})
-        .catch(function(){console.log("error writing");});
-        i5++;
-     }
-   );
+  );
+  tueTasks.forEach(
+    function(task){updateTask(task);}
+  );
+  wedTasks.forEach(
+    function(task){updateTask(task);}
+  );
+  thuTasks.forEach(
+    function(task){updateTask(task);}
+  );
+  friTasks.forEach(
+    function(task){updateTask(task);}
+  );
 }
+
+//updateTask(task) : helper function for updateTasks
+// which takes in a task object and updates its description
+// in Firestore with user input
+function updateTask(task){ //item => task
+  //update value in corresponding doc element
+
+  console.log("Updating with: " + task.listElement.value);
+
+  task.document.ref.update({
+    description: task.listElement.value
+  })
+  .then(function(){console.log("doc written");})
+  .catch(function(){console.log("error writing");});
+}
+
 
 function deleteTask(event) {
   event.preventDefault();
@@ -561,38 +503,33 @@ function deleteTask(event) {
   let day = eventId.substring(6, 9);
   let num = eventId.substring(9, 10);  
 
-  let documentArray = null;
-  let taskListItemsArr = null;
+  //let documentArray = null;
+  //let taskListItemsArr = null;
+  let taskArray = null;
   
   switch(day){
     case "mon":
-      documentArray = monTaskDocs;
-      taskListItemsArr = monTaskListItems;
+      taskArray = monTasks;
       break;
     case "tue":
-      documentArray = tueTaskDocs;
-      taskListItemsArr = tueTaskListItems;
+      taskArray = tueTasks;
       break;
     case "wed":
-      documentArray = wedTaskDocs;
-      taskListItemsArr = wedTaskListItems;
+      taskArray = wedTasks;
       break;
     case "thu":
-      documentArray = thuTaskDocs;
-      taskListItemsArr = thuTaskListItems;
+      taskArray = thuTasks;
       break;
     case "fri":
-      documentArray = friTaskDocs;
-      taskListItemsArr = friTaskListItems;
+      taskArray = friTasks;
       break;
     default: 
       console.log("error parsing day");
   }
 
-  documentArray[num].ref.delete()
+  taskArray[num].document.ref.delete()
   .then(function(){
     console.log("document deleted");
-
   })
   .catch(function(e){
     console.log("error deleting document");
@@ -600,10 +537,9 @@ function deleteTask(event) {
   });
 
   //remove the deleted task from the display
-  taskListItemsArr[num].style.display = "none";
+  taskArray[num].listElement.style.display = "none";
   //remove the delete button from the display 
-  event.target.style.display = "none";
-
+  taskArray[num].deleteButton.style.display = "none";
 }
 
 //Add event listeners to add task (plus) buttons
