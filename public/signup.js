@@ -13,19 +13,7 @@ function processNewUser(event){
     let username = document.getElementById("username").value;
     let password = document.getElementById("password").value;
     
-    console.log("Email: " + email + " Username: " + username + " password: " + password);
     //TODO: verify complexity requirements
-
-
-    /*
-    //authenticate with firebase
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-    .catch(
-        function(error) {
-            alert("Error signing up");
-        }
-    );
-    */
     
     firebase.auth().createUserWithEmailAndPassword(email, password)
     .then( function() {
@@ -41,9 +29,6 @@ function processNewUser(event){
             userID: id
        });
     });
-
-
-    console.log("end of processnewuser");
 }
 
 function cancelSignup(event){
