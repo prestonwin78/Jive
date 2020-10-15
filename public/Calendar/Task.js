@@ -3,6 +3,7 @@ export default class Task {
     this.document = null;
     this.id = null;
     this.deleteButton = null;
+    this.deleted = false;
     this.date = null;
     this.dayOfWeek = "";
     this.listElement = null;

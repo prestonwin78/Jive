@@ -6,6 +6,7 @@ let signOutPressed = false;
 const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
 const abbrDaysOfWeek = daysOfWeek.map(elem => elem.substring(0, 3));
 let db = null;
+let tasks = [];
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
@@ -28,23 +29,27 @@ firebase.auth().onAuthStateChanged((user) => {
 
 // Main function which initializes calendar
 // with tasks from database
-function createCalendar() {
+async function createCalendar() {
   addSignoutButton();
-  let tasks = [];
+  //let tasks = [];
   let date = getFirstDateToDisplay();
   let dates = getAllDatesToDisplay(date);
   // TODO: output surrounding weeks
   db = firebase.firestore();  //set global db variable
   let dayQueries = getQueries(dates);
-  dayQueries.forEach((query, i) => {
-    getTasksFromQuery(query, i)
+  let promiseArr = [];
+  for (let i = 0; i < dayQueries.length; i++) {
+    promiseArr[i] = getTasksFromQuery(dayQueries[i])
       .then((tasksArr) => { tasks[i] = tasksArr });
-  });
+  }
+  await Promise.all(promiseArr);
   for (let i = 0; i < tasks.length; i++) {
     for (let j = 0; j < tasks[i].length; j++) {
       outputTask(tasks[i][j], i); //i == day of the week
     }
   }
+
+  document.getElementById("saveButton").addEventListener("click", save);
 }
 
 
@@ -133,7 +138,7 @@ async function getTasksFromQuery(query, dayIndex) {
         dayTasksArr.push(newTask);
       })
     });
-  resolve(dayTasksArr);
+  return dayTasksArr;
 }
 
 // Outputs a task on the screen
@@ -153,7 +158,7 @@ function outputTask(task, dayOfWeek) {
 
   let newListItem = document.createElement("li");
   newListItem.setAttribute("value", task.description) // TODO: duplicate description values?
-  newListItem.appendChild(newelem);
+  newListItem.appendChild(newInputElem);
 
   listToUpdate.appendChild(newListItem);
 
@@ -169,4 +174,32 @@ function outputTask(task, dayOfWeek) {
 
 function deleteTask() {
   console.log("in delete task");
+  // Mark task as deleted (lazy deletion)
+  // Remove from the 
+}
+
+function save(/*tasks*/) {
+  tasks.forEach((list) => {
+    list.forEach((task) => {
+      updateTask(task);
+    })
+  })
+}
+
+function updateTask(task) {
+  // TODO: remove deleted tasks from db
+  // TODO: add added tasks to db
+  if (task.deleted) {
+    console.log("deleting task");
+  }
+  task.document.ref.update({
+    description: task.listElement.value
+  }).catch(error => console.log(error));
+}
+
+function addTask(event) {
+  //Figure out which plus called it
+  //get the list
+  //append new element to end of list
+  //create new task document
 }
