@@ -37,7 +37,9 @@ async function createCalendar() {
   //let tasks = [];
   let date = getFirstDateToDisplay();
   dates = getAllDatesToDisplay(date); //sets global dates array
+
   // TODO: output surrounding weeks
+
   db = firebase.firestore();  //set global db variable
   let dayQueries = getQueries(dates);
   let promiseArr = [];
@@ -46,6 +48,7 @@ async function createCalendar() {
       .then((tasksArr) => { tasks[i] = tasksArr });
   }
   await Promise.all(promiseArr);
+
   for (let i = 0; i < tasks.length; i++) {
     for (let j = 0; j < tasks[i].length; j++) {
       outputTask(tasks[i][j], i); //i == day of the week
@@ -114,15 +117,12 @@ function getAllDatesToDisplay(firstDate) {
 }
 
 
-// Returns an array of queries for each date 
+// Returns an array of queries for tasks on each date 
 // passed in
 function getQueries(dates) {
   let dayQueries = [];
   let tasksRef = db.collection("users").doc(userId).collection("tasks");
-
-  /* end testing */
   for (let i = 0; i < dates.length; i++) {
-    console.log("getting query where date == " + dates[i]);
     dayQueries[i] = tasksRef.where("dateOfTask", "==", dates[i]);
   }
   return dayQueries;
@@ -137,16 +137,12 @@ async function getTasksFromQuery(query, dayIndex) {
     .then((querySnapshot) => {
       let i = 0;
       querySnapshot.docs.forEach((taskDoc) => {
-        console.log('creating new task: ' + i);
         let newTask = new Task();
         newTask.dayOfWeek = dayIndex;
         newTask.documentRef = taskDoc.ref;
         newTask.description = taskDoc.data().description;
         newTask.taskNum = i;  // ith task of the day
         newTask.inDb = true;
-        console.log("Task: ");
-        console.log("description:  " + newTask.description);
-        console.log("tasknum:  " + newTask.taskNum);
         dayTasksArr.push(newTask);
         i++;
       })
@@ -191,23 +187,19 @@ function outputTask(task, dayIndex) {
 // database 
 function deleteTask(event) {
   event.preventDefault();
-  console.log("in delete task");
-  console.log("called by: " + event.target.id);
   // Figure out which task called it
   let day = event.target.id.substring(6, 9);
   let dayIndex = abbrDaysOfWeek.indexOf(day);
   let taskToDelete = null;
+  // Find task to delete
   for (let i = 0; i < tasks[dayIndex].length; i++) {
     if (tasks[dayIndex][i].deleteButton === event.target) {
-      console.log("found it!");
       taskToDelete = tasks[dayIndex][i];
     }
   }
-
   // Remove from the dom
   taskToDelete.listElement.style.display = "none";
   taskToDelete.deleteButton.style.display = "none";
-
   // Mark task as deleted (lazy deletion)
   taskToDelete.deletedFromDom = true;
 }
@@ -226,21 +218,15 @@ function save() {
 
 // Updates a task in the database based on properties
 // of the task.
-
-// problem - user adds a new task and immediately deletes it
 function updateTask(task) {
-  console.log("in updateTask");
   if (task.deletedFromDom && !task.deletedFromDb
     && task.inDb) {
     // if task is marked as deleted but not yet 
     // deleted from the database, delete from the database
-    console.log("in cond 1");
-    //task.document.ref.delete(); // async
     task.documentRef.delete()
       .then(() => { task.deletedFromDb = true; });
   } else if (task.addedToDom && !task.inDb) {
     // If task is new, add to the database
-    console.log("in cond 2");
     db.collection("users").doc(userId)
       .collection("tasks").add({
         dateOfTask: task.date,
@@ -253,14 +239,12 @@ function updateTask(task) {
       });
   } else if (!task.deletedFromDom && !task.deletedFromDb
     && task.inDb) {
-    console.log("in cond 3");
     // If task not deleted from the database or dom, update
     // to match the text currently on the page
     task.documentRef.update({
       description: task.listElement.value
     }).catch(error => console.log(error));
   }
-  console.log("end of update");
 }
 
 
@@ -272,15 +256,13 @@ function addTask(event) {
   // by first three characters - ex: (id == 'monplus')
   let dayAbbr = event.target.id.substr(0, 3);
   let dayIndex = abbrDaysOfWeek.indexOf(dayAbbr);
-  // create new task
+  // Add new task
   let newTask = new Task();
-  // TODO: initialize task properties
   newTask.date = dates[dayIndex];
   newTask.taskNum = tasks[dayIndex].length;
   newTask.addedToDom = true;
   tasks[dayIndex].push(newTask);
-  // add element to the dom
-  outputTask(newTask, dayIndex);
+  outputTask(newTask, dayIndex); // add element to dom
 }
 
 
