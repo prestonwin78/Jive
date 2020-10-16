@@ -3,7 +3,10 @@ export default class Task {
     this.document = null;
     this.id = null;
     this.deleteButton = null;
-    this.deleted = false;
+    this.deletedFromDom = false;
+    this.deletedFromDb = false;
+    this.addedToDom = false;
+    this.addedToDb = false;
     this.date = null;
     this.dayOfWeek = "";
     this.listElement = null;

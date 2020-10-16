@@ -8,6 +8,7 @@ const abbrDaysOfWeek = daysOfWeek.map(elem => elem.substring(0, 3));
 let db = null;
 let tasks = [];
 
+
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     // user is signed in
@@ -26,6 +27,7 @@ firebase.auth().onAuthStateChanged((user) => {
     }
   }
 });
+
 
 // Main function which initializes calendar
 // with tasks from database
@@ -50,8 +52,8 @@ async function createCalendar() {
   }
 
   document.getElementById("saveButton").addEventListener("click", save);
+  addPlusListeners(); // add event listeners for plus buttons
 }
-
 
 
 // Adds functionality to the signout button and
@@ -67,6 +69,7 @@ function addSignoutButton() {
       })
   })
 }
+
 
 // Check if the user selected another day
 // other than the current one and update the date
@@ -93,20 +96,22 @@ function getFirstDateToDisplay() {
   return date;
 }
 
+
 // Returns an array of all dates to display
 // starting with the date passed in
-function getAllDatesToDisplay(date) {
+function getAllDatesToDisplay(firstDate) {
   let dates = [];
   for (let i = 0; i < 5; i++) {
     let newDate = new Date();
-    newDate.setFullYear(date.getFullYear());  //set year
-    newDate.setDate(date.getDate() + i);      //set day of month
-    newDate.setMonth(date.getMonth());        //set month
-    newDate.setHours(0, 0, 0, 0);             //set rest to 0
+    newDate.setFullYear(firstDate.getFullYear());  //set year
+    newDate.setDate(firstDate.getDate() + i);      //set day of month
+    newDate.setMonth(firstDate.getMonth());        //set month
+    newDate.setHours(0, 0, 0, 0);                  //set rest to 0
     dates[i] = newDate;
   }
   return dates;
 }
+
 
 // Returns an array of queries for each date 
 // passed in
@@ -122,24 +127,31 @@ function getQueries(dates) {
   return dayQueries;
 }
 
+
 // Executes a query for tasks on a day and returns an array
 // of task objects corresponding to tasks on that day
 async function getTasksFromQuery(query, dayIndex) {
   let dayTasksArr = [];
   await query.get()
     .then((querySnapshot) => {
-      querySnapshot.forEach((taskDoc, i) => {
-        console.log('creating new task');
+      let i = 0;
+      querySnapshot.forEach((taskDoc) => {
+        console.log('creating new task: ' + i);
         let newTask = new Task();
         newTask.dayOfWeek = dayIndex;
         newTask.document = taskDoc;
         newTask.description = taskDoc.data().description;
         newTask.taskNum = i;  // ith task of the day
+        console.log("Task: ");
+        console.log("description:  " + newTask.description);
+        console.log("tasknum:  " + newTask.taskNum);
         dayTasksArr.push(newTask);
+        i++;
       })
     });
   return dayTasksArr;
 }
+
 
 // Outputs a task on the screen
 function outputTask(task, dayOfWeek) {
@@ -163,7 +175,7 @@ function outputTask(task, dayOfWeek) {
   listToUpdate.appendChild(newListItem);
 
   let newDeleteElem = document.createElement("img");
-  newDeleteElem.id = "delete" + dayOfWeek + task.taskNum;
+  newDeleteElem.id = "delete" + abbrDaysOfWeek[dayOfWeek] + task.taskNum;
   newDeleteElem.className = "deletemark";
   newDeleteElem.src = "./images/deletemark.svg";
 
@@ -172,13 +184,35 @@ function outputTask(task, dayOfWeek) {
   task.deleteButton = newDeleteElem;
 }
 
-function deleteTask() {
+
+// Delete task from user view but NOT from the
+// database 
+function deleteTask(event) {
+  event.preventDefault();
   console.log("in delete task");
+  console.log("called by: " + event.target.id);
+  // Figure out which task called it
+  let day = event.target.id.substring(6, 9);
+  let dayIndex = abbrDaysOfWeek.indexOf(day);
+  let taskToDelete = null;
+  for (let i = 0; i < tasks[dayIndex].length; i++) {
+    console.log("Task: " + JSON.stringify(tasks[dayIndex][i]));
+    if (tasks[dayIndex][i].deleteButton === event.target) {
+      taskToDelete = tasks[dayIndex][i];
+    }
+  }
+
   // Mark task as deleted (lazy deletion)
-  // Remove from the 
+  taskToDelete.deleted = true;
+  // Remove from the dom
+  taskToDelete.listElement.style.display = "none";
+  taskToDelete.deleteButton.style.display = "none";
 }
 
-function save(/*tasks*/) {
+
+// Updates each task in the database when the user
+// hits the save button
+function save() {
   tasks.forEach((list) => {
     list.forEach((task) => {
       updateTask(task);
@@ -186,20 +220,53 @@ function save(/*tasks*/) {
   })
 }
 
+
+// Updates a task in the database based on properties
+// of the task.
 function updateTask(task) {
-  // TODO: remove deleted tasks from db
-  // TODO: add added tasks to db
-  if (task.deleted) {
-    console.log("deleting task");
+  if (task.deletedFromDom && !task.deletedFromDb) {
+    // if task is marked as deleted but not yet 
+    // deleted from the database, delete from the database
+    task.document.ref.delete(); // async
+    task.deletedFromDb = true;
+  } else if (task.addedToDom && !task.addedToDb) {
+    // If task is new, add to the database
+    db.collection("users").doc(userId)
+      .collection("tasks").add({
+        dateOfTask: task.date,
+        description: task.listElement.value,
+        status: "incomplete"
+      })
+  } else if (!task.deletedFromDb) {
+    // If task not deleted from the database, update
+    // to match the text currently on the page
+    task.document.ref.update({
+      description: task.listElement.value
+    }).catch(error => console.log(error));
   }
-  task.document.ref.update({
-    description: task.listElement.value
-  }).catch(error => console.log(error));
 }
 
+
+// Add new task to the dom based on which
+// plus button clicked but don't add to database
 function addTask(event) {
-  //Figure out which plus called it
-  //get the list
-  //append new element to end of list
-  //create new task document
+  event.preventDefault();
+  // Figure out which plus called it
+  // by first three characters - ex: (id == 'monplus')
+  let dayAbbr = event.target.id.substr(0, 3);
+  let day = abbrDaysOfWeek.indexOf(dayAbbr);
+  // create new task
+  let newTask = new Task();
+  // TODO: initialize task properties
+  // add element to the dom
+  outputTask(newTask, day);
+}
+
+
+// Add an addtask event listener for each day of the week
+function addPlusListeners() {
+  abbrDaysOfWeek.forEach((dayAbbr) => {
+    document.getElementById(dayAbbr + "plus")
+      .addEventListener("click", addTask);
+  });
 }
