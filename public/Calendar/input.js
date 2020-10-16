@@ -143,6 +143,7 @@ async function getTasksFromQuery(query, dayIndex) {
         newTask.document = taskDoc;
         newTask.description = taskDoc.data().description;
         newTask.taskNum = i;  // ith task of the day
+        newTask.inDb = true;
         console.log("Task: ");
         console.log("description:  " + newTask.description);
         console.log("tasknum:  " + newTask.taskNum);
@@ -225,28 +226,41 @@ function save() {
 
 // Updates a task in the database based on properties
 // of the task.
+
+// problem - user adds a new task and immediately deletes it
 function updateTask(task) {
-  if (task.deletedFromDom && !task.deletedFromDb) {
+  console.log("in updateTask");
+  if (task.deletedFromDom && !task.deletedFromDb
+    && task.inDb) {
     // if task is marked as deleted but not yet 
     // deleted from the database, delete from the database
-    task.document.ref.delete(); // async
-    task.deletedFromDb = true;
-  } else if (task.addedToDom && !task.addedToDb) {
+    console.log("in cond 1");
+    //task.document.ref.delete(); // async
+    task.document.ref.delete()
+      .then(() => { task.deletedFromDb = true; });
+  } else if (task.addedToDom && !task.inDb) {
     // If task is new, add to the database
+    console.log("in cond 2");
     db.collection("users").doc(userId)
       .collection("tasks").add({
         dateOfTask: task.date,
         description: task.listElement.value,
         status: "incomplete"
+      })
+      .then((newdoc) => {
+        task.document = newdoc;
+        task.inDb = true;
       });
-    task.addedToDb = true;
-  } else if (!task.deletedFromDb) {
-    // If task not deleted from the database, update
+  } else if (!task.deletedFromDom && !task.deletedFromDb
+    && task.inDb) {
+    console.log("in cond 3");
+    // If task not deleted from the database or dom, update
     // to match the text currently on the page
     task.document.ref.update({
       description: task.listElement.value
     }).catch(error => console.log(error));
   }
+  console.log("end of update");
 }
 
 
@@ -261,9 +275,9 @@ function addTask(event) {
   // create new task
   let newTask = new Task();
   // TODO: initialize task properties
-  newTask.addedToDom = true;
   newTask.date = dates[dayIndex];
   newTask.taskNum = tasks[dayIndex].length;
+  newTask.addedToDom = true;
   tasks[dayIndex].push(newTask);
   // add element to the dom
   outputTask(newTask, dayIndex);
