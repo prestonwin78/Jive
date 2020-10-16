@@ -5,6 +5,7 @@ let userId = "";
 let signOutPressed = false;
 const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
 const abbrDaysOfWeek = daysOfWeek.map(elem => elem.substring(0, 3));
+let dates = [];
 let db = null;
 let tasks = [];
 
@@ -35,7 +36,7 @@ async function createCalendar() {
   addSignoutButton();
   //let tasks = [];
   let date = getFirstDateToDisplay();
-  let dates = getAllDatesToDisplay(date);
+  dates = getAllDatesToDisplay(date); //sets global dates array
   // TODO: output surrounding weeks
   db = firebase.firestore();  //set global db variable
   let dayQueries = getQueries(dates);
@@ -135,7 +136,7 @@ async function getTasksFromQuery(query, dayIndex) {
   await query.get()
     .then((querySnapshot) => {
       let i = 0;
-      querySnapshot.forEach((taskDoc) => {
+      querySnapshot.docs.forEach((taskDoc) => {
         console.log('creating new task: ' + i);
         let newTask = new Task();
         newTask.dayOfWeek = dayIndex;
@@ -154,12 +155,12 @@ async function getTasksFromQuery(query, dayIndex) {
 
 
 // Outputs a task on the screen
-function outputTask(task, dayOfWeek) {
+function outputTask(task, dayIndex) {
   let listToUpdate = document.getElementById(
-    abbrDaysOfWeek[dayOfWeek] + "-tasks"  //ex: list id is mon-tasks
+    abbrDaysOfWeek[dayIndex] + "-tasks"  //ex: list id is mon-tasks
   );
   let deleteContainer = document.getElementById(
-    "deletecontainer" + abbrDaysOfWeek[dayOfWeek]
+    "deletecontainer" + abbrDaysOfWeek[dayIndex]
   );
 
   let newInputElem = document.createElement("input");
@@ -175,7 +176,7 @@ function outputTask(task, dayOfWeek) {
   listToUpdate.appendChild(newListItem);
 
   let newDeleteElem = document.createElement("img");
-  newDeleteElem.id = "delete" + abbrDaysOfWeek[dayOfWeek] + task.taskNum;
+  newDeleteElem.id = "delete" + abbrDaysOfWeek[dayIndex] + task.taskNum;
   newDeleteElem.className = "deletemark";
   newDeleteElem.src = "./images/deletemark.svg";
 
@@ -196,17 +197,18 @@ function deleteTask(event) {
   let dayIndex = abbrDaysOfWeek.indexOf(day);
   let taskToDelete = null;
   for (let i = 0; i < tasks[dayIndex].length; i++) {
-    console.log("Task: " + JSON.stringify(tasks[dayIndex][i]));
     if (tasks[dayIndex][i].deleteButton === event.target) {
+      console.log("found it!");
       taskToDelete = tasks[dayIndex][i];
     }
   }
 
-  // Mark task as deleted (lazy deletion)
-  taskToDelete.deleted = true;
   // Remove from the dom
   taskToDelete.listElement.style.display = "none";
   taskToDelete.deleteButton.style.display = "none";
+
+  // Mark task as deleted (lazy deletion)
+  taskToDelete.deletedFromDom = true;
 }
 
 
@@ -236,7 +238,8 @@ function updateTask(task) {
         dateOfTask: task.date,
         description: task.listElement.value,
         status: "incomplete"
-      })
+      });
+    task.addedToDb = true;
   } else if (!task.deletedFromDb) {
     // If task not deleted from the database, update
     // to match the text currently on the page
@@ -254,12 +257,16 @@ function addTask(event) {
   // Figure out which plus called it
   // by first three characters - ex: (id == 'monplus')
   let dayAbbr = event.target.id.substr(0, 3);
-  let day = abbrDaysOfWeek.indexOf(dayAbbr);
+  let dayIndex = abbrDaysOfWeek.indexOf(dayAbbr);
   // create new task
   let newTask = new Task();
   // TODO: initialize task properties
+  newTask.addedToDom = true;
+  newTask.date = dates[dayIndex];
+  newTask.taskNum = tasks[dayIndex].length;
+  tasks[dayIndex].push(newTask);
   // add element to the dom
-  outputTask(newTask, day);
+  outputTask(newTask, dayIndex);
 }
 
 
