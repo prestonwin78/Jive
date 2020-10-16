@@ -1,6 +1,6 @@
 export default class Task {
   constructor() {
-    this.document = null;
+    this.documentRef = null;
     this.id = null;
     this.description = "";
     this.deleteButton = null;

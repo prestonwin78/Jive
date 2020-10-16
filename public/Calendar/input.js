@@ -140,7 +140,7 @@ async function getTasksFromQuery(query, dayIndex) {
         console.log('creating new task: ' + i);
         let newTask = new Task();
         newTask.dayOfWeek = dayIndex;
-        newTask.document = taskDoc;
+        newTask.documentRef = taskDoc.ref;
         newTask.description = taskDoc.data().description;
         newTask.taskNum = i;  // ith task of the day
         newTask.inDb = true;
@@ -236,7 +236,7 @@ function updateTask(task) {
     // deleted from the database, delete from the database
     console.log("in cond 1");
     //task.document.ref.delete(); // async
-    task.document.ref.delete()
+    task.documentRef.delete()
       .then(() => { task.deletedFromDb = true; });
   } else if (task.addedToDom && !task.inDb) {
     // If task is new, add to the database
@@ -247,8 +247,8 @@ function updateTask(task) {
         description: task.listElement.value,
         status: "incomplete"
       })
-      .then((newdoc) => {
-        task.document = newdoc;
+      .then((docRef) => {
+        task.documentRef = docRef;
         task.inDb = true;
       });
   } else if (!task.deletedFromDom && !task.deletedFromDb
@@ -256,7 +256,7 @@ function updateTask(task) {
     console.log("in cond 3");
     // If task not deleted from the database or dom, update
     // to match the text currently on the page
-    task.document.ref.update({
+    task.documentRef.update({
       description: task.listElement.value
     }).catch(error => console.log(error));
   }
