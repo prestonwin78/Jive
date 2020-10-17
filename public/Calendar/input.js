@@ -157,10 +157,11 @@ function outputTask(task, dayIndex) {
     abbrDaysOfWeek[dayIndex] + "-tasks"  //ex: list id is mon-tasks
   );
   let deleteContainer = document.getElementById(
-    "deletecontainer" + abbrDaysOfWeek[dayIndex]
+    "delete-container-" + abbrDaysOfWeek[dayIndex]
   );
 
   let newInputElem = document.createElement("input");
+  newInputElem.className = "taskInput";
   newInputElem.type = "text";
   newInputElem.maxLength = "30";
   newInputElem.value = task.description;
@@ -168,6 +169,7 @@ function outputTask(task, dayIndex) {
 
   let newListItem = document.createElement("li");
   newListItem.setAttribute("value", task.description) // TODO: duplicate description values?
+  newListItem.className = "taskListItem";
   newListItem.appendChild(newInputElem);
 
   listToUpdate.appendChild(newListItem);
@@ -188,12 +190,12 @@ function outputTask(task, dayIndex) {
 function deleteTask(event) {
   event.preventDefault();
   // Figure out which task called it
-  let day = event.target.id.substring(6, 9);
+  let day = event.currentTarget.id.substring(6, 9);
   let dayIndex = abbrDaysOfWeek.indexOf(day);
   let taskToDelete = null;
   // Find task to delete
   for (let i = 0; i < tasks[dayIndex].length; i++) {
-    if (tasks[dayIndex][i].deleteButton === event.target) {
+    if (tasks[dayIndex][i].deleteButton === event.currentTarget) {
       taskToDelete = tasks[dayIndex][i];
     }
   }
@@ -254,9 +256,12 @@ function addTask(event) {
   event.preventDefault();
   // Figure out which plus called it
   // by first three characters - ex: (id == 'monplus')
-  let dayAbbr = event.target.id.substr(0, 3);
+  let dayAbbr = event.currentTarget.id.substr(0, 3);
   let dayIndex = abbrDaysOfWeek.indexOf(dayAbbr);
   // Add new task
+  console.log("called by: " + event.currentTarget.id);
+  console.log("day abbr: " + dayAbbr);
+  console.log("day index: " + dayIndex);
   let newTask = new Task();
   newTask.date = dates[dayIndex];
   newTask.taskNum = tasks[dayIndex].length;

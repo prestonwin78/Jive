@@ -1,161 +1,135 @@
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
 }
 
-body {
-    margin: 0;
-    padding: 0;
-    border: 0;
+/* HEADER */
+
+.title {
+  width: 50%;
+  padding-left: 2rem;
+  float: left;
 }
 
-/* make cursor into a hand to symbolize link when
-    user hovers over signout button */
-#signout{
-    cursor: pointer;
+.navbar {
+  padding: 0;
+  margin: 0;
+  width: 50%;
 }
 
-.week-day {
-    color: ghostwhite;
-    font-family: Arial;
-    text-align: left;
-    height: 25px;
+.navbar ul {
+  width: 100%;
+  padding-right: 2rem;
 }
 
-body {
-    background-color: #FAF9F4;
+.navbar li {
+  list-style: none;
+  width: auto;
+  float: right;
+  display: block;
+  padding: 1rem;
+  cursor: pointer;
 }
 
-table {
-    margin-right: auto;
-    margin-left: auto;
-    padding: 0px 20px 10px 20px;
-    border: 1px solid rgb(133, 133, 133);
-    border-radius: 10px;
-    width: 750px;
-    height: 400px;
-    background: rgb(55, 117, 127);
-    border-spacing: 20px 0px;
+.navbar li:hover {
+  background-color: hsla(136, 0%, 12%, 15%);
 }
 
-/* Cells for tasks of the day */
-tr td{
-    border: 1px solid gray;
-    border-radius: 10px;
-    background-color: hsl(199, 75%, 95%);
-    margin: 0px 10px 0px 10px;
-    height: 40%;
-    min-height: 50%;
-    max-height: 50%;
-    font-family: Arial;
-    font-size: 14;
-    color: darkslategray;
-    padding: 10px;
+/* BODY */
+html {
+  height: 100%;
 }
 
-#today-date {
-    text-align: right;
-    padding-right: 0;
-    float: right;
+.body {
+  background-image: url("./images/background.jpg");
+  background-size: cover;
+  position: absolute;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  width: 100%;
+  height: 100%;
 }
 
-.week-list {
-    list-style: none;
-    font-size: .9em;
-    color: lightslategray;
-    display: inline block;
-    float: left;
-    width: auto;
-    margin-right: 10%;
-    margin-left: 5%;
-    margin-top: 40px;
+h1 {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: white;
 }
 
-/* List of weeks indicated by starting date */
-.week-list li {
-    padding: 10px;
+.dateOfWeek {
+  margin-left: 2rem;
+  font-size: 1.25rem;
+  color: hsla(207, 0%, 93%, 50%);
 }
 
-.week-list li:hover{
-    color: darkslategray;
-    background: white;
-    border-radius: 15px;
+.daycard {
+  background-color: hsla(136, 0%, 12%, 25%);
+  color: white;
+  border-radius: 0.25rem;
+  margin: 0 1rem;
+  width: 100%;
+  margin-bottom: 2rem;
+  min-height: 5rem;
 }
 
-/* List of tasks within a day */
-/* not working */
-
-.day-tasks{
-    list-style-type: none;
-    width: 100px; 
-}
-    
-input[type=text] {
-    border: none;
-    background-color: white;
-    margin: 2px 0px;
-    padding: 2px 5px;
-    width: 150px;
-    height: 25px;
-    border-radius: 5px;
-    display: inline-block;
+.daycard h3 {
+  padding-left: 1rem;
 }
 
-.deletemark {
-    display: block;
-    width: 12px;
-    opacity: 0;
-    margin: 2px 0px;
-    padding: 2px 5px;
-    height: 24px;   
+.tasks-container {
+  padding-right: 0 !important;
+  width: 100%;
 }
 
-.deletemark:hover {
-    opacity: 1;
+.taskInput {
+  width: 100%;
+  border: none;
+  border-radius: .25rem;
 }
 
-
-#calendar{
-    display: inline-block;
-    position: relative;
-    align-content: left;
-    float: none;
-    width: 50%;
-    margin: 30px;
+.taskListItem {
+  width: 100%;
+  list-style: none;
 }
 
-.day-container {
-    margin: 0;
-    padding: 0;
-    align-content: left;
-    float: left;        
-    width: 80%;        
+.delete-container{
+  width: 100%;
+  opacity: 80%;
 }
 
-.plus {
-    width: 17px;
-    float: right;
-    display: inline-block;
-    position: relative;
-    bottom: 0;
-    right: 0;
+.delete-container img:hover {
+  background-color: hsla(0, 0%, 10%, 30%);
+  cursor: pointer;
+}
+
+.delete-container img {
+  width: 100%;
+  height: 1rem;
+}
+
+.addButton {
+  padding: 0.5rem;
+  width: 50%;
+  margin: auto;
+  border-radius: 0.25rem;
+  border: none;
+}
+
+.plus-container {
+  margin: 1rem 0;
+}
+
+.plus-container img:hover {
+  background-color: hsla(0, 0%, 10%, 30%);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.plus-container img {
+  margin: auto;
 }
 
 #saveButton {
-    background-color: #4CAF50; 
-    border: none;
-    color: white;
-    padding: 5px 20px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    border: 1px solid rgb(133, 133, 133); 
-    box-shadow: turquoise;
-    border-radius: 4px;
-}
-
-footer {
-    position: absolute;
-    bottom: 0;
-    border: none;
+  width: 100%;
+  height: 2rem;
+  border-radius: .25rem;
 }
