@@ -12,7 +12,7 @@
     >
     <link rel="stylesheet" type="text/css" href="./styles/calendarstyles.css" />
     <link rel="stylesheet" type="text/css" href="./styles/aboutstyles.css" />
-    <link rel="stylesheet" type="text/css" href="./styles/signinstyles.css" />
+    <link rel="stylesheet" type="text/css" href="./styles/auth-styles.css" />
   </head>
 
   <body>
@@ -209,6 +209,46 @@
         </div>
       </div>
       <!-- end About section -->
+
+      <!-- Signup section -->
+      <div class="signup-page">
+        <div class="container signup-box bg-light">
+          <div class="row justify-content-center">
+            <h1 class="signup-text text-dark">Sign Up</h1>
+          </div>
+          <div class="row justify-content-center">
+            <input
+              type="text"
+              placeholder="Email"
+              name="email"
+              class="auth-text">
+            </input>
+          </div>
+          <div class="row justify-content-center">
+            <input
+                type="password"
+                placeholder="Password"
+                name="password"
+                class="auth-text">
+            </input>
+          </div>
+          <div class="row justify-content-center">
+            <button
+                name="signup-submit"
+                onClick={this.handleClick}
+                class="submit btn-primary">
+                Signup
+              </button>
+              <button
+                name="signup-cancel"
+                onClick={this.handleClick}
+                class="submit btn-secondary">
+                Cancel
+              </button>
+          </div>
+        </div>
+      </div>
+      <!-- end Signup section -->
     </div>
 
     <!-- JQuery -->
