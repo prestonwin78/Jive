@@ -42,7 +42,7 @@ html {
 }
 
 .body {
-  background-image: url("./images/background.jpg");
+  background-image: url("../images/background.jpg");
   background-size: cover;
   position: absolute;
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;

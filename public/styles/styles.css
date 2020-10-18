@@ -68,7 +68,7 @@ nav li:hover {
 #image-sec {
     margin: 0px;
     padding: 75px;
-    background-image: url("./images/mountains.PNG");
+    background-image: url("../images/mountains.PNG");
     background-repeat: no-repeat;
     background-position: center;
 }
