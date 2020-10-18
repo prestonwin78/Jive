@@ -1,10 +1,10 @@
 import { displayLoginPopup } from './loginpopup.js';
 import Task from "./Task.js";
 
-let userId = "";
-let signOutPressed = false;
 const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
 const abbrDaysOfWeek = daysOfWeek.map(elem => elem.substring(0, 3));
+let userId = "";
+let signOutPressed = false;
 let dates = [];
 let db = null;
 let tasks = [];
@@ -19,7 +19,6 @@ firebase.auth().onAuthStateChanged((user) => {
     let overlay = document.getElementById("overlay");
     overlay.style.display = "none";
 
-    // create calendar
     createCalendar();
   } else {
     // user is signed out
@@ -34,13 +33,12 @@ firebase.auth().onAuthStateChanged((user) => {
 // with tasks from database
 async function createCalendar() {
   addSignoutButton();
-  //let tasks = [];
   let date = getFirstDateToDisplay();
   dates = getAllDatesToDisplay(date); //sets global dates array
 
   // TODO: output surrounding weeks
 
-  db = firebase.firestore();  //set global db variable
+  db = firebase.firestore();  //set global
   let dayQueries = getQueries(dates);
   let promiseArr = [];
   for (let i = 0; i < dayQueries.length; i++) {
@@ -227,7 +225,8 @@ function updateTask(task) {
     // deleted from the database, delete from the database
     task.documentRef.delete()
       .then(() => { task.deletedFromDb = true; });
-  } else if (task.addedToDom && !task.inDb) {
+  } else if (task.addedToDom && !task.inDb 
+    && !task.deletedFromDom) {
     // If task is new, add to the database
     db.collection("users").doc(userId)
       .collection("tasks").add({
