@@ -4,7 +4,8 @@ import Task from "./Task.js";
 const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
 const abbrDaysOfWeek = daysOfWeek.map(elem => elem.substring(0, 3));
 let userId = "";
-let signOutPressed = false;
+let loginPressed = false;
+let signupPressed = false;
 let dates = [];
 let db = null;
 let tasks = [];
@@ -19,12 +20,18 @@ firebase.auth().onAuthStateChanged((user) => {
     let overlay = document.getElementById("overlay");
     overlay.style.display = "none";
 
+    //show logout nav button, remove login/signup btns
+    $("#logout").show();
+    $("#login").hide();
+    $("#signup").hide();
+
     createCalendar();
   } else {
-    // user is signed out
-    if (!signOutPressed) {
-      displayLoginPopup();
-    }
+    
+    // show login and signup nav buttons, remove signout btn
+    $("#logout").hide();
+    $("#login").show();
+    $("#signup").show();
   }
 });
 
@@ -32,7 +39,6 @@ firebase.auth().onAuthStateChanged((user) => {
 // Main function which initializes calendar
 // with tasks from database
 async function createCalendar() {
-  addSignoutButton();
   let date = getFirstDateToDisplay();
   dates = getAllDatesToDisplay(date); //sets global dates array
 
@@ -55,21 +61,18 @@ async function createCalendar() {
 
   document.getElementById("saveButton").addEventListener("click", save);
   addPlusListeners(); // add event listeners for plus buttons
+  addNavbarListeners();
 }
 
 
 // Adds functionality to the signout button and
 // redirects home when pressed
-function addSignoutButton() {
-  const signout = document.getElementById("signout");
-  signout.addEventListener("click", (e) => {
-    e.preventDefault();
-    signOutPressed = true;
-    firebase.auth().signOut()
-      .then(() => {
-        window.location.href = "../index.html";
-      })
-  })
+function signout(e) {
+  e.preventDefault();
+  firebase.auth().signOut()
+    .then(() => {
+      userId = "";
+    });
 }
 
 
@@ -275,5 +278,19 @@ function addPlusListeners() {
   abbrDaysOfWeek.forEach((dayAbbr) => {
     document.getElementById(dayAbbr + "plus")
       .addEventListener("click", addTask);
+  });
+}
+
+function addNavbarListeners(){
+  $("#about").on("click", displayAbout);
+  $("#signout").on("click", signout);
+  $("#login").on("click", displayLoginPopup);
+  //$("#signup").on("click", displaySignup);
+}
+
+function displayAbout(){
+  $("#aboutOverlay").show();
+  $(".close").on("click", () => {
+    $("#aboutOverlay").hide();
   });
 }

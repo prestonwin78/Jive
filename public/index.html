@@ -11,6 +11,7 @@
         crossorigin="anonymous"
     >
     <link rel="stylesheet" type="text/css" href="./styles/calendarstyles.css" />
+    <link rel="stylesheet" type="text/css" href="./styles/aboutstyles.css" />
     <link rel="stylesheet" type="text/css" href="./styles/signinstyles.css" />
   </head>
 
@@ -21,9 +22,10 @@
         <h1 class="title">Jive</h1>
         <nav class="navbar">
           <ul>
-            <li id="signout">Sign Out</li>
-            <li id="signout">About</li>
-            <li id="signout">Sign Up</li>
+            <li id="about">About</li>
+            <li id="logout">Logout</li>
+            <li id="login">Login</li>
+            <li id="signup">Sign Up</li>
           </ul>
         </nav>
       </header>
@@ -191,6 +193,22 @@
         </div>
       </div>
       <!-- end sign in section -->
+
+      <!-- About section -->
+      <div id="aboutOverlay" style="display: none;">
+        <div id="aboutSection">
+          <button type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h1 class="overlay-header">About</h1>
+          <p>Jive is a simple and easy to use task manager which
+            allows users to easily add items to their to-do list. 
+            Signing up is not required, but you can choose to sign 
+            in to save your tasks and see them later. 
+          </p>
+        </div>
+      </div>
+      <!-- end About section -->
     </div>
 
     <!-- JQuery -->
@@ -219,8 +237,9 @@
 
     <!-- end of firebase code -->
 
-    <script src="./src/pagechanges.js"></script>
     <!-- scripts that use firebase services -->
     <script type="module" src="./src/input.js"></script>
+    <!-- end scripts that use firebase services -->
+    <script src="./src/pagechanges.js"></script>
   </body>
 </html>

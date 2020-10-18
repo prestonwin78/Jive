@@ -36,6 +36,14 @@
   background-color: hsla(136, 0%, 12%, 15%);
 }
 
+.overlay-header {
+  color: hsla(0, 0%, 10%, 100%);
+}
+
+.close {
+  font-size: 3rem;
+}
+
 /* BODY */
 html {
   height: 100%;
