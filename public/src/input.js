@@ -4,17 +4,21 @@ import Task from "./Task.js";
 const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
 const abbrDaysOfWeek = daysOfWeek.map(elem => elem.substring(0, 3));
 let userId = "";
+let signedIn = false;
 let loginPressed = false;
 let signupPressed = false;
+let signoutPressed = false;
 let dates = [];
 let db = null;
 let tasks = [];
 
+addNavbarListeners();
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     // user is signed in
     userId = firebase.auth().currentUser.uid;
+    signedIn = true;
 
     // remove overlay
     let overlay = document.getElementById("overlay");
@@ -24,14 +28,21 @@ firebase.auth().onAuthStateChanged((user) => {
     $("#logout").show();
     $("#login").hide();
     $("#signup").hide();
+    $("#saveButton").show();
 
     createCalendar();
   } else {
+    if(signoutPressed){
+      window.location.href = "../index.html"; //reload
+    }
+    // User signed out
+    signedIn = false;
     
     // show login and signup nav buttons, remove signout btn
     $("#logout").hide();
     $("#login").show();
     $("#signup").show();
+    $("#saveButton").hide();
   }
 });
 
@@ -44,24 +55,27 @@ async function createCalendar() {
 
   // TODO: output surrounding weeks
 
-  db = firebase.firestore();  //set global
-  let dayQueries = getQueries(dates);
-  let promiseArr = [];
-  for (let i = 0; i < dayQueries.length; i++) {
-    promiseArr[i] = getTasksFromQuery(dayQueries[i])
-      .then((tasksArr) => { tasks[i] = tasksArr });
-  }
-  await Promise.all(promiseArr);
+  // If signed in, get tasks for the week in the database
+  // and output to the screen
+  if(signedIn){
+    db = firebase.firestore();  //set global
+    let dayQueries = getQueries(dates);
+    let promiseArr = [];
+    for (let i = 0; i < dayQueries.length; i++) {
+      promiseArr[i] = getTasksFromQuery(dayQueries[i])
+        .then((tasksArr) => { tasks[i] = tasksArr });
+    }
+    await Promise.all(promiseArr);
 
-  for (let i = 0; i < tasks.length; i++) {
-    for (let j = 0; j < tasks[i].length; j++) {
-      outputTask(tasks[i][j], i); //i == day of the week
+    for (let i = 0; i < tasks.length; i++) {
+      for (let j = 0; j < tasks[i].length; j++) {
+        outputTask(tasks[i][j], i); //i == day of the week
+      }
     }
   }
 
   document.getElementById("saveButton").addEventListener("click", save);
   addPlusListeners(); // add event listeners for plus buttons
-  addNavbarListeners();
 }
 
 
@@ -71,7 +85,7 @@ function signout(e) {
   e.preventDefault();
   firebase.auth().signOut()
     .then(() => {
-      userId = "";
+      signoutPressed = true;
     });
 }
 
@@ -283,7 +297,7 @@ function addPlusListeners() {
 
 function addNavbarListeners(){
   $("#about").on("click", displayAbout);
-  $("#signout").on("click", signout);
+  $("#logout").on("click", signout);
   $("#login").on("click", displayLoginPopup);
   //$("#signup").on("click", displaySignup);
 }
