@@ -3,6 +3,12 @@
   <head>
     <title>Jive</title>
 
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
     <!-- Bootstrap -->
     <link 
         rel="stylesheet" 
@@ -10,6 +16,8 @@
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" 
         crossorigin="anonymous"
     >
+
+    <!-- Stylesheets -->
     <link rel="stylesheet" type="text/css" href="./styles/calendarstyles.css" />
     <link rel="stylesheet" type="text/css" href="./styles/aboutstyles.css" />
     <link rel="stylesheet" type="text/css" href="./styles/auth-styles.css" />
@@ -289,13 +297,11 @@
     <script src="/__/firebase/7.15.4/firebase-firestore.js"></script>
 
     <script type="module">
-      // Your web app's Firebase configuration
+      // Firebase configuration
       import { firebaseConfig } from "./src/firebase-config.js";
-      // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
       firebase.analytics();
     </script>
-
     <!-- end of firebase code -->
 
     <!-- scripts that use firebase services -->
