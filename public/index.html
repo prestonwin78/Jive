@@ -169,27 +169,46 @@
       </div>
       
       <!-- Sign in section - is removed upon sign in -->
-      <div id="overlay" style="display:none">
-        <div id="signinbox">
-          <h2>Sign in</h2>
-          <form>
-            <div id="signin-col1">
-              <label for="username" id="username">Email: </label>
-              <label for="password" id="password">Password:</label>
-            </div>
-            <div id="signin-col2">
-              <input type="text" name="username" id="usernameinput" />
-              <input type="password" name="password" id="passwordinput" />
-            </div>
-            <hr class="clear-break" />
-            <button type="button" class="popup" id="cancel-button">
+      <div class="signin-page" id="login-page" style="display: none;">
+        <div class="container signup-box bg-light">
+          <div class="row success-block" id="success-block" style="display: none;">
+            <h5 class="text-success">User created.</h5>
+          </div>
+          <div class="row justify-content-center">
+            <h1 class="signup-text text-dark">Login</h1>
+          </div>
+          <div class="row justify-content-center">
+            <input
+              id="login-email"
+              type="text"
+              placeholder="Email"
+              name="login-email"
+              class="auth-text">
+            </input>
+          </div>
+          <div class="row justify-content-center">
+            <input
+                id="login-password"
+                type="password"
+                placeholder="Password"
+                name="login-password"
+                class="auth-text">
+            </input>
+          </div>
+          <div class="row justify-content-center">
+            <button
+              id="login-submit"
+              name="login-submit"
+              class="submit btn-primary">
+              Login
+            </button>
+            <button
+              id="login-cancel"
+              name="login-cancel"
+              class="submit btn-secondary">
               Cancel
             </button>
-            <button type="button" class="popup" id="signin-button">
-              Sign In
-            </button>
-            <h4 id="error-message">error signing in</h4>
-          </form>
+          </div>
         </div>
       </div>
       <!-- end sign in section -->
@@ -211,40 +230,42 @@
       <!-- end About section -->
 
       <!-- Signup section -->
-      <div class="signup-page">
+      <div class="signup-page" id="signup-page" style="display: none;">
         <div class="container signup-box bg-light">
           <div class="row justify-content-center">
             <h1 class="signup-text text-dark">Sign Up</h1>
           </div>
           <div class="row justify-content-center">
             <input
+              id="signup-email"
               type="text"
               placeholder="Email"
-              name="email"
+              name="signup-email"
               class="auth-text">
             </input>
           </div>
           <div class="row justify-content-center">
             <input
-                type="password"
-                placeholder="Password"
-                name="password"
-                class="auth-text">
+              id="signup-password"
+              type="password"
+              placeholder="Password"
+              name="signup-password"
+              class="auth-text">
             </input>
           </div>
           <div class="row justify-content-center">
             <button
-                name="signup-submit"
-                onClick={this.handleClick}
-                class="submit btn-primary">
-                Signup
-              </button>
-              <button
-                name="signup-cancel"
-                onClick={this.handleClick}
-                class="submit btn-secondary">
-                Cancel
-              </button>
+              id="signup-submit"
+              name="signup-submit"
+              class="submit btn-primary">
+              Signup
+            </button>
+            <button
+              id="signup-cancel"
+              name="signup-cancel"
+              class="submit btn-secondary">
+              Cancel
+            </button>
           </div>
         </div>
       </div>

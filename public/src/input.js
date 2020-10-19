@@ -1,4 +1,5 @@
 import { displayLoginPopup } from './loginpopup.js';
+import { displaySignupPopup } from './signuppopup.js';
 import Task from "./Task.js";
 
 const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
@@ -10,7 +11,7 @@ let signupPressed = false;
 let signoutPressed = false;
 let dates = [];
 let db = null;
-let tasks = [];
+let tasks = [[],[],[],[],[]];
 
 addNavbarListeners();
 
@@ -20,16 +21,13 @@ firebase.auth().onAuthStateChanged((user) => {
     userId = firebase.auth().currentUser.uid;
     signedIn = true;
 
-    // remove overlay
-    let overlay = document.getElementById("overlay");
-    overlay.style.display = "none";
-
     //show logout nav button, remove login/signup btns
     $("#logout").show();
     $("#login").hide();
     $("#signup").hide();
     $("#saveButton").show();
 
+    clearTasks();
     createCalendar();
   } else {
     if(signoutPressed){
@@ -43,6 +41,9 @@ firebase.auth().onAuthStateChanged((user) => {
     $("#login").show();
     $("#signup").show();
     $("#saveButton").hide();
+
+    clearTasks();
+    createCalendar();
   }
 });
 
@@ -203,7 +204,7 @@ function outputTask(task, dayIndex) {
 // Delete task from user view but NOT from the
 // database 
 function deleteTask(event) {
-  event.preventDefault();
+  // event.preventDefault();
   // Figure out which task called it
   let day = event.currentTarget.id.substring(6, 9);
   let dayIndex = abbrDaysOfWeek.indexOf(day);
@@ -225,11 +226,13 @@ function deleteTask(event) {
 // Updates each task in the database when the user
 // hits the save button
 function save() {
-  tasks.forEach((list) => {
-    list.forEach((task) => {
-      updateTask(task);
+  if(signedIn){
+    tasks.forEach((list) => {
+      list.forEach((task) => {
+        updateTask(task);
+      })
     })
-  })
+  }
 }
 
 
@@ -275,9 +278,6 @@ function addTask(event) {
   let dayAbbr = event.currentTarget.id.substr(0, 3);
   let dayIndex = abbrDaysOfWeek.indexOf(dayAbbr);
   // Add new task
-  console.log("called by: " + event.currentTarget.id);
-  console.log("day abbr: " + dayAbbr);
-  console.log("day index: " + dayIndex);
   let newTask = new Task();
   newTask.date = dates[dayIndex];
   newTask.taskNum = tasks[dayIndex].length;
@@ -299,7 +299,7 @@ function addNavbarListeners(){
   $("#about").on("click", displayAbout);
   $("#logout").on("click", signout);
   $("#login").on("click", displayLoginPopup);
-  //$("#signup").on("click", displaySignup);
+  $("#signup").on("click", displaySignupPopup);
 }
 
 function displayAbout(){
@@ -307,4 +307,13 @@ function displayAbout(){
   $(".close").on("click", () => {
     $("#aboutOverlay").hide();
   });
+}
+
+function clearTasks(){
+  for(let i = 0; i < tasks.length; i++){
+    for(let j = 0; j < tasks[i].length; j++){
+      tasks[i][j].listElement.style.display = "none";
+    }
+  }
+  tasks = [[],[],[],[],[]];
 }

@@ -1,24 +1,19 @@
  export function displayLoginPopup(){
     //display overlay
-    let overlay = document.getElementById("overlay");
-    overlay.style.display = "block";
+    $("#login-page").show();
 
     //Add functionality to cancel and sign-in buttons
-    let cancelButton = document.getElementById("cancel-button");
-    let submitButton = document.getElementById("signin-button");
+    $("#login-cancel").on("click", () => {
+        console.log("hiding login page");
+        $("#login-page").hide();
+    })
 
-    cancelButton.addEventListener("click", function(e){
-        e.preventDefault();
-        //redirect to home page
-        window.location.href = "../index.html";
-    });
-
-    submitButton.addEventListener("click", function(e){
+    $("#login-submit").on("click", (e) => {
         e.preventDefault(); //don't submit form
 
         //get user email and password input
-        let email = document.getElementById("usernameinput").value.toString();
-        let password = document.getElementById("passwordinput").value;
+        let email = $("#login-email").val();
+        let password = $("#login-password").val();
 
         //authenticate with firebase
         firebase.auth().signInWithEmailAndPassword(email, password)
@@ -26,14 +21,11 @@
         (user) => {
             if(user){
                 //if user successfully signs in, remove overlay
-                //and proceed to main logic
-                let overlay = document.getElementById("overlay");
-                overlay.style.display = "none";
-                afterInit();  //main logic
+                $("#login-page").hide();
             } 
-        }).catch(function(e){
-            //display error message
-            document.getElementById("error-message").style.display = "inline-block";
-        });
+        }).catch(() => {
+            //TODO: display error message
+            //$("error-message").show();
+        })
     });
 }

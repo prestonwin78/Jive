@@ -2,7 +2,6 @@ $(document).ready(() => {
   console.log("doc ready");
   $(".daycard")
     .on('mouseenter', (event) => {
-      console.log("hovering!");
       $(event.currentTarget).find(".delete-container").css({
         visibility: "visible"
       });
