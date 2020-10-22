@@ -1,8 +1,4 @@
 $(document).ready(() => {
-  initializeStyles()
-  .then(() => {
-    animateRows();
-  })
   $(".daycard")
     .on('mouseenter', (event) => {
       $(event.currentTarget).find(".delete-container").css({
@@ -22,6 +18,17 @@ $(document).ready(() => {
     });
 });
 
+export async function performRowAnimation(){
+  let promise = new Promise((resolve, reject) => {
+    initializeStyles()
+    .then(async () => {
+      await animateRows();
+      resolve();
+    })
+  });
+  await promise;
+}
+
 async function initializeStyles(){
   $("#day-row-1").css({
     marginTop: "50px",
@@ -35,15 +42,16 @@ async function initializeStyles(){
   });
 }
 
-function animateRows() {
+async function animateRows() {
   $("#day-row-1").show();
   $("#day-row-2").show();
-  $("#day-row-1").animate({
+  let promise1 = $("#day-row-1").animate({
     marginTop: "0px",
     opacity: "100%"
-  }, 2000);
-  $("#day-row-2").animate({
+  }, 2000).promise();
+  let promise2 = $("#day-row-2").animate({
     marginTop: "0px",
     opacity: "100%"
-  }, 2000);
+  }, 2000).promise();
+  await Promise.all([promise1, promise2]);
 }

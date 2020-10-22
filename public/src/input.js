@@ -1,5 +1,6 @@
 import { displayLoginPopup } from './loginpopup.js';
 import { displaySignupPopup } from './signuppopup.js';
+import { performRowAnimation } from './pagechanges.js';
 import Task from "./Task.js";
 
 const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
@@ -25,7 +26,6 @@ firebase.auth().onAuthStateChanged((user) => {
     $("#logout").show();
     $("#login").hide();
     $("#signup").hide();
-    $("#saveButton").show();
     $("#about").show();
 
     clearTasks();
@@ -77,7 +77,14 @@ async function createCalendar() {
     }
   }
 
-  document.getElementById("saveButton").addEventListener("click", save);
+  performRowAnimation()
+  .then(() => {
+    console.log("about to show save button");
+    if(signedIn){
+      $("#saveButton").fadeIn(1000);
+      $("#saveButton").on("click", save);
+    }
+  });
   addPlusListeners(); // add event listeners for plus buttons
 }
 
