@@ -26,6 +26,7 @@ firebase.auth().onAuthStateChanged((user) => {
     $("#login").hide();
     $("#signup").hide();
     $("#saveButton").show();
+    $("#about").show();
 
     clearTasks();
     createCalendar();
@@ -41,6 +42,7 @@ firebase.auth().onAuthStateChanged((user) => {
     $("#login").show();
     $("#signup").show();
     $("#saveButton").hide();
+    $("#about").show();
 
     clearTasks();
     createCalendar();
