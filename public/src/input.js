@@ -79,7 +79,6 @@ async function createCalendar() {
 
   performRowAnimation()
   .then(() => {
-    console.log("about to show save button");
     if(signedIn){
       $("#saveButton").fadeIn(1000);
       $("#saveButton").on("click", save);
@@ -322,6 +321,7 @@ function clearTasks(){
   for(let i = 0; i < tasks.length; i++){
     for(let j = 0; j < tasks[i].length; j++){
       tasks[i][j].listElement.style.display = "none";
+      tasks[i][j].deleteButton.style.display = "none";
     }
   }
   tasks = [[],[],[],[],[]];

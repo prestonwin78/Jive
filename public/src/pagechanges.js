@@ -1,4 +1,7 @@
 $(document).ready(() => {
+  $(".body").css({
+    visibility: "visible"
+  })
   $(".daycard")
     .on('mouseenter', (event) => {
       $(event.currentTarget).find(".delete-container").css({
